@@ -8,6 +8,7 @@ import com.hasson.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -19,10 +20,11 @@ import java.util.List;
 public class HomeController {
     @Autowired
     private UserService userService;
+
     @Autowired
     private DiscussPostService discussPostService;
 
-    @RequestMapping(path = "/index", method = RequestMethod.GET)
+    @RequestMapping(path = {"/index", "/"}, method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page) {
         //SpringMVC自动实例化Model和Page，并将Page注入Model
         //所以在thymeleaf可以直接访问Page
@@ -41,6 +43,8 @@ public class HomeController {
             }
         }
         model.addAttribute("discussPosts", discussPosts);
+
         return "index";
+        //为什么要redirece,不用重复请求一次.
     }
 }

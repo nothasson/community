@@ -5,17 +5,21 @@ import com.hasson.community.config.KaptchaConfig;
 import com.hasson.community.entity.User;
 import com.hasson.community.service.UserService;
 import com.hasson.community.util.CommunityConstant;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -42,8 +46,8 @@ public class LoginController implements CommunityConstant {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
-    public String getLoginPage() {
-
+    public String getLoginPage(HttpSession session) {
+        System.out.println(session);
         return "/site/login";
     }
 
@@ -96,5 +100,42 @@ public class LoginController implements CommunityConstant {
             LOGGER.error("响应验证码报错", e.getMessage());
         }
 
+    }
+
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public String login(Model model, String username, String password, String code, boolean isRememberMe
+            , HttpSession session, HttpServletResponse response) {
+        String kaptcha = session.getAttribute("kaptcha").toString();
+        if (StringUtils.isBlank(code)) {
+            model.addAttribute("kaptchaMsg", "请输入验证码");
+            return "/site/login";
+        } else if (StringUtils.isBlank(kaptcha)) {
+            model.addAttribute("kaptchaMsg", "验证码生成失败");
+            return "/site/login";
+        } else if (!kaptcha.equalsIgnoreCase(code)) {
+            model.addAttribute("kaptchaMsg", "验证码错误，请重新输入");
+            return "/site/login";
+        }
+        int expiredSecond = isRememberMe ? IS_REMEMBER＿ME_EXPIRED_SECONDS : DEFAULT_EXPIRED_SECONDS;
+
+        Map<String, Object> map = userService.login(username, password, expiredSecond);
+        if (map.containsKey("ticket")) {
+            Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
+            cookie.setPath("/");
+            cookie.setMaxAge(expiredSecond);
+            response.addCookie(cookie);
+            return "redirect:/index";
+        } else {
+            model.addAttribute("usernameMsg", map.get("usernameMsg"));
+            model.addAttribute("passwordMsg", map.get("passwordMsg"));
+            return "/site/login";
+        }
+    }
+
+    @RequestMapping(path = "/logout", method = RequestMethod.GET)
+    public String logout(@CookieValue(name = "ticket") String ticket) {
+        if (!ticket.equals(123))
+            userService.logout(ticket);
+        return "redirect:/index";
     }
 }

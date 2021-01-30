@@ -11,7 +11,7 @@ public interface LoginTicketMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertLoginTicket(LoginTicket loginTicket);
 
-    @Select({"select id user_id,ticket,status,expired from login_ticket ",
+    @Select({"select  user_id,ticket,status,expired from login_ticket ",
             "where ticket = #{ticket}"})
     LoginTicket selectByTicket(String ticket);
 

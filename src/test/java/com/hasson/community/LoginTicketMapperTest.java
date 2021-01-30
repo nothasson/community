@@ -27,5 +27,10 @@ public class LoginTicketMapperTest {
         loginTicket.setTicket(CommunityUtil.generateUUID());
         loginTicket.setStatus(0);
         loginTicketMapper.insertLoginTicket(loginTicket);
+
+        LoginTicket loginTicket1 = loginTicketMapper.selectByTicket(loginTicket.getTicket());
+        System.out.println(loginTicket1);
+        loginTicketMapper.updateStatus(loginTicket.getTicket(), 1);
+
     }
 }
