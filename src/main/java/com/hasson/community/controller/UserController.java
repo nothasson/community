@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -95,4 +96,18 @@ public class UserController {
         }
     }
 
+    @RequestMapping(path = "/modifyPass", method = RequestMethod.POST)
+    public String updatePassword(Model model, String oldPassword, String newPassword, String confirmPassword) {
+        User user = hostHolder.getUser();
+        Map<String, Object> map = userService.updatePassword(user.getId(), oldPassword, newPassword, confirmPassword);
+        if (map == null || map.size() == 0) {  //修改成功
+            model.addAttribute("msg", "修改成功了,即将返回主页");
+            model.addAttribute("target", "/index");
+            return "/site/operate-result";
+        } else {
+            model.addAttribute("oldMsg", map.get("oldMsg"));
+            model.addAttribute("newMsg", map.get("newMsg"));
+            return "/site/setting";
+        }
+    }
 }

@@ -20,5 +20,5 @@ public interface UserMapper {
 
     int updatePassword(int id, String password);
 
-    void updateSault(int userId, String newSalt);
+    int updateSalt(int id, String salt);
 }
