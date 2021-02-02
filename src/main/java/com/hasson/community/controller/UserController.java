@@ -1,5 +1,6 @@
 package com.hasson.community.controller;
 
+import com.hasson.community.annotation.LoginRequired;
 import com.hasson.community.entity.User;
 import com.hasson.community.service.UserService;
 import com.hasson.community.util.CommunityUtil;
@@ -40,11 +41,13 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage() {
         return "/site/setting";
     }
 
+    @LoginRequired
     @RequestMapping(path = "uploadHeader", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
         if (headerImage == null) {
@@ -96,6 +99,7 @@ public class UserController {
         }
     }
 
+    @LoginRequired
     @RequestMapping(path = "/modifyPass", method = RequestMethod.POST)
     public String updatePassword(Model model, String oldPassword, String newPassword, String confirmPassword) {
         User user = hostHolder.getUser();
