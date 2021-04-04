@@ -5,12 +5,14 @@ import com.hasson.community.entity.Page;
 import com.hasson.community.entity.User;
 import com.hasson.community.service.DiscussPostService;
 import com.hasson.community.service.UserService;
+import com.hasson.community.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.LinkedList;

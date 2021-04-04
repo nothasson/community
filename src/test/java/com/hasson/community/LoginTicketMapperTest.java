@@ -3,6 +3,7 @@ package com.hasson.community;
 import com.hasson.community.dao.LoginTicketMapper;
 import com.hasson.community.entity.LoginTicket;
 import com.hasson.community.util.CommunityUtil;
+import com.hasson.community.util.SensitiveFilter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import java.util.Date;
 public class LoginTicketMapperTest {
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     @Test
     public void ticketTest() {
@@ -32,5 +35,10 @@ public class LoginTicketMapperTest {
         System.out.println(loginTicket1);
         loginTicketMapper.updateStatus(loginTicket.getTicket(), 1);
 
+    }
+
+    @Test
+    public void testSensitiveFiler() {
+        System.out.println(sensitiveFilter.filter("开票xxxx嫖娼"));
     }
 }
